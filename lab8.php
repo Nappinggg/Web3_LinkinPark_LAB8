@@ -2,14 +2,13 @@
 // 1. URL з GET-параметрами
 $url = 'http://lab.vntu.org/api-server/lab8.php?user=student&pass=p@ssw0rd';
 
-// 2. Отримання JSON (варіант через file_get_contents)
+// 2. Отримання JSON
 $json = file_get_contents($url);
 if ($json === false) {
     die('Не вдалося отримати дані з API');
 }
 
 // 3. Перетворення JSON у структури PHP
-// true -> асоціативні масиви, без true -> об’єкти
 $data = json_decode($json, true);
 if ($data === null) {
     die('Помилка json_decode()');
@@ -18,8 +17,6 @@ if ($data === null) {
 // 4. Об’єднуємо всі записи людей в один масив
 $people = [];
 
-// Якщо структура має кілька масивів з людьми, наприклад:
-// ["group1" => [...], "group2" => [...]], проходимо по всьому
 foreach ($data as $block) {
     if (is_array($block)) {
         foreach ($block as $person) {
@@ -30,10 +27,18 @@ foreach ($data as $block) {
     }
 }
 
-// На випадок, якщо все вже було одним масивом людей
 if (empty($people) && is_array($data)) {
     $people = $data;
 }
+
+// 5. Визначаємо всі можливі ключі (поля)
+$allKeys = [];
+foreach ($people as $person) {
+    if (is_array($person)) {
+        $allKeys = array_unique(array_merge($allKeys, array_keys($person)));
+    }
+}
+sort($allKeys);
 ?>
 <!DOCTYPE html>
 <html lang="uk">
@@ -67,40 +72,30 @@ if (empty($people) && is_array($data)) {
         <h2>Дані з JSON API</h2>
 
         <section class="section-card">
-            <table border="1" cellpadding="6" cellspacing="0">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Ім’я</th>
-                    <th>Прізвище</th>
-                    <th>Вік</th>
-                    <th>Інше</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php if (!empty($people)): ?>
+            <?php if (!empty($people) && !empty($allKeys)): ?>
+                <table border="1" cellpadding="6" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <?php foreach ($allKeys as $key): ?>
+                            <th><?php echo htmlspecialchars($key); ?></th>
+                        <?php endforeach; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <?php foreach ($people as $i => $person): ?>
                         <tr>
                             <td><?php echo $i + 1; ?></td>
-                            <td><?php echo htmlspecialchars($person['first_name'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($person['last_name'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($person['age'] ?? ''); ?></td>
-                            <td>
-                                <?php
-                                // Виводимо всі інші поля людини
-                                foreach ($person as $key => $value) {
-                                    if (in_array($key, ['first_name', 'last_name', 'age'])) continue;
-                                    echo htmlspecialchars($key . ': ' . $value) . '<br>';
-                                }
-                                ?>
-                            </td>
+                            <?php foreach ($allKeys as $key): ?>
+                                <td><?php echo htmlspecialchars($person[$key] ?? ''); ?></td>
+                            <?php endforeach; ?>
                         </tr>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="5">Немає даних для відображення.</td></tr>
-                <?php endif; ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>Немає даних для відображення.</p>
+            <?php endif; ?>
         </section>
     </div>
 </main>
