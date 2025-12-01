@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Linkin Park - Головна</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Акуратне доповнення до існуючих стилів */
+        .anim-area {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .anim-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #00e5ff, transparent 55%),
+                        radial-gradient(circle at 70% 70%, #ff3366, transparent 55%),
+                        #111320;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #f5f5f5;
+            transform: translateX(0) scale(1);
+        }
+
+        .anim-box span {
+            opacity: 0.9;
+        }
+
+        .anim-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .anim-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: rgba(15, 23, 42, 0.95);
+            color: #f5f5f5;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .anim-btn:hover {
+            background: rgba(0, 229, 255, 0.16);
+            border-color: rgba(0, 229, 255, 0.8);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+<header>
+  <div class="page-wrap">
+    <h1>Linkin Park</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html" class="current">Головна</a></li>
+        <li><a href="about.html">Про гурт</a></li>
+        <li><a href="hybrid-theory.html">Hybrid Theory</a></li>
+        <li><a href="meteora.html">Meteora</a></li>
+        <li><a href="contacts.html">Контакти</a></li>
+        <li><a href="animation.html">Анімація</a></li>
+        <li><a href="survey.php">Опитування</a></li>
+        <li><a href="jokes.html">Жарти</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+
+<main>
+    <div class="page-wrap">
+        <h2>Ласкаво просимо до світу LP!</h2>
+        <p class="subtitle">
+            Linkin Park — легендарний рок-гурт з унікальним поєднанням ню-металу, альтернативи та електроніки.
+            На цьому сайті зібрано інформацію про ключові альбоми та пісні.
+        </p>
+
+        <section class="section-card">
+            <h3>Основні альбоми на сайті</h3>
+            <p>Почни знайомство з найважливішими релізами гурту:</p>
+            <ul>
+                <li><a href="hybrid-theory.html">Hybrid Theory (2000)</a> – дебютний прорив.</li>
+                <li><a href="meteora.html">Meteora (2003)</a> – розвиток звучання та закріплення успіху.</li>
+            </ul>
+        </section>
+
+        <!-- Інтерактивний розділ з анімацією -->
+        <section class="section-card">
+            <h3>Інтерактивний LP-логотип</h3>
+
+            <div class="anim-area">
+                <div id="lp-box" class="anim-box">
+                    <span>LP</span>
+                </div>
+
+                <div class="anim-controls">
+                    <button id="btn-start" class="anim-btn">Старт</button>
+                    <button id="btn-pause" class="anim-btn">Пауза</button>
+                    <button id="btn-reset" class="anim-btn">Скинути</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <p>
+                Більше про історію гурту, склад та еволюцію звучання читай на сторінці
+                <a href="about.html">«Про гурт»</a>.
+            </p>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <div class="page-wrap">
+        <p>2025 - Linkin Park</p>
+    </div>
+</footer>
+
+<script>
+    const box = document.getElementById('lp-box');
+    const btnStart = document.getElementById('btn-start');
+    const btnPause = document.getElementById('btn-pause');
+    const btnReset = document.getElementById('btn-reset');
+
+    let animationId;
+    let startTime = null;
+    let isRunning = false;
+
+    const maxShift = 220; // трохи менший зсув, щоб вписувалось у картку
+    const speed = 0.3;
+
+    function animate(timestamp) {
+        if (!startTime) {
+            startTime = timestamp;
+        }
+
+        const elapsed = timestamp - startTime;
+        const shift = (elapsed * speed) % (maxShift * 2);
+        const distance = shift <= maxShift ? shift : (maxShift * 2 - shift);
+
+        const scale = 1 + 0.12 * Math.sin(elapsed / 260);
+
+        box.style.transform = `translateX(${distance}px) scale(${scale})`;
+
+        if (isRunning) {
+            animationId = window.requestAnimationFrame(animate);
+        }
+    }
+
+    btnStart.addEventListener('click', () => {
+        if (!isRunning) {
+            isRunning = true;
+            startTime = null;
+            animationId = window.requestAnimationFrame(animate);
+        }
+    });
+
+    btnPause.addEventListener('click', () => {
+        isRunning = false;
+        window.cancelAnimationFrame(animationId);
+    });
+
+    btnReset.addEventListener('click', () => {
+        isRunning = false;
+        window.cancelAnimationFrame(animationId);
+        startTime = null;
+        box.style.transform = 'translateX(0px) scale(1)';
+    });
+</script>
+</body>
+</html>
+
+
+
+

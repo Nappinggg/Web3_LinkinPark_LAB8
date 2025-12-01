@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Жарти про Linkin Park</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .joke-card {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 14px;
+      background: #111320;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.6);
+    }
+    .joke-text {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="page-wrap">
+    <h1>Linkin Park</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про гурт</a></li>
+        <li><a href="hybrid-theory.html">Hybrid Theory</a></li>
+        <li><a href="meteora.html">Meteora</a></li>
+        <li><a href="contacts.html">Контакти</a></li>
+        <li><a href="animation.html">Анімація</a></li>
+        <li><a href="survey.php">Опитування</a></li>
+        <li><a href="jokes.html" class="current">Жарти</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-wrap">
+    <h2>Випадковий жарт</h2>
+
+    <section class="section-card joke-card">
+      <p id="joke" class="joke-text">Натисни кнопку, щоб завантажити жарт.</p>
+      <button id="btn-joke" class="contact-link">
+        <span>Показати жарт</span>
+        
+      </button>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="page-wrap">
+    <p>2025 - Linkin Park</p>
+  </div>
+</footer>
+
+<script>
+  const btnJoke = document.getElementById('btn-joke');
+  const jokeEl = document.getElementById('joke');
+
+  btnJoke.addEventListener('click', function () {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'jokes.txt', true);
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const text = xhr.responseText;
+        const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+        if (lines.length > 0) {
+          const randomIndex = Math.floor(Math.random() * lines.length);
+          jokeEl.textContent = lines[randomIndex];
+        } else {
+          jokeEl.textContent = 'Файл з жартами порожній.';
+        }
+      }
+    };
+
+    xhr.send();
+  });
+</script>
+</body>
+</html>
