@@ -65,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <li><a href="animation.html">Анімація</a></li>
                 <li><a href="survey.php" class="current">Опитування</a></li>
                 <li><a href="jokes.html">Жарти</a></li>
+                <li><a href="lab8.php">JSON API</a></li>      
             </ul>
         </nav>
     </div>
